@@ -9,7 +9,7 @@ import useRegisterModal from "@/hooks/useRegisterModal";
 import RegisterModal from "../modal/RegisterModal";
 import useLoginModal from "@/hooks/useLoginModal";
 import LoginModal from "../modal/LoginModal";
-
+import { signIn } from "next-auth/react";
 const Auth = () => {
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
@@ -42,6 +42,7 @@ const Auth = () => {
             <h2 className="font-bold text-3xl mb-4">Join today.</h2>
             <div className="flex flex-col space-y-3">
               <Button
+                onClick={() => signIn("google")}
                 label={
                   <div className="flex items-center gap-2 justify-center">
                     <FcGoogle />
@@ -52,6 +53,7 @@ const Auth = () => {
                 secondary
               />
               <Button
+                onClick={() => signIn("github")}
                 label={
                   <div className="flex items-center gap-2 justify-center">
                     <AiFillGithub />

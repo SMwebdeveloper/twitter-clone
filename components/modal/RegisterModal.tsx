@@ -15,6 +15,7 @@ import useLoginModal from "@/hooks/useLoginModal";
 import axios from "axios";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { AlertCircle } from "lucide-react";
+import { signIn } from "next-auth/react";
 
 const RegisterModal = () => {
   const [step, setStep] = useState(1);
@@ -157,6 +158,10 @@ function RegisterStep2({ data }: { data: { name: string; email: string } }) {
         ...values,
       });
       if (response.success) {
+        signIn("credentials", {
+          email: data.email,
+          password: values.password,
+        });
         registerModal.onClose();
       }
     } catch (error: any) {
