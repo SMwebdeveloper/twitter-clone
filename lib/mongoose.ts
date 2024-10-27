@@ -4,7 +4,7 @@ let isConnected: boolean = false;
 export const connectDatabase = async () => {
   mongoose.set("strictQuery", true);
 
-  if (!process.env.MONGO_URI) {
+  if (!process.env.NEXT_PUBLIC_MONGO_URI) {
     console.log("Mongo uri is not defined");
   }
 

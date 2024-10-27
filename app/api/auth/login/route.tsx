@@ -18,10 +18,7 @@ export async function POST(req: Request) {
     }
 
     const isPasswordValid = await compare(password, isExistinUser.password);
-    // const user = User.create({
-    //   email,
-    //   password: isPasswordValid,
-    // });
+
     if (!isPasswordValid) {
       return NextResponse.json(
         {
