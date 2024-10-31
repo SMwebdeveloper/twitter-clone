@@ -12,18 +12,41 @@ interface Props {
   placeholder: string;
   user: IUser;
   setPosts: Dispatch<SetStateAction<IPost[]>>;
+  postId?: string;
+  isComment?: boolean;
 }
-const Form = ({ placeholder, user, setPosts }: Props) => {
+const Form = ({ placeholder, user, setPosts, postId, isComment }: Props) => {
   const [body, setBody] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = async () => {
     try {
       setIsLoading(true);
-      const post = { body, userId: user._id };
-      const { data } = await axios.post("/api/posts", post);
-      const newPost = { ...data, user };
-      setPosts((prev) => [newPost, ...prev]);
+      if (isComment) {
+        const { data } = await axios.post("/api/comments", {
+          body,
+          userId: user._id,
+          postId,
+        });
+        const newComment = {
+          ...data,
+          user,
+          likes: 0,
+          hasLiked: false,
+        };
+        setPosts((prev) => [newComment, ...prev]);
+      } else {
+        const post = { body, userId: user._id };
+        const { data } = await axios.post("/api/posts", post);
+        const newPost = {
+          ...data,
+          user,
+          likes: 0,
+          hasLiked: false,
+          comment: 0,
+        };
+        setPosts((prev) => [newPost, ...prev]);
+      }
       setBody("");
       toast({
         title: "Success",

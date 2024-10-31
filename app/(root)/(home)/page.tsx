@@ -32,7 +32,7 @@ const Page = () => {
   }, []);
   return (
     <div>
-      <Header label={"Home"} isBack />
+      <Header label={"Home"} />
       {isLoading || status === "loading" ? (
         <>
           <div className="flex justify-center items-center h-24">
