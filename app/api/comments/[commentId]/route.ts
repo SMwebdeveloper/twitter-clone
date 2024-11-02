@@ -12,10 +12,14 @@ export async function DELETE(
     const { commentId } = route.params;
     const { postId }: any = req.json();
 
+    console.log(commentId);
     await Comment.findByIdAndDelete(commentId);
-    await Post.findByIdAndUpdate(postId, {
-      $pull: { comments: commentId },
-    });
+
+    await Post.findByIdAndUpdate(
+      postId,
+      { $pull: { comments: commentId } },
+      { new: true }
+    );
 
     return NextResponse.json({ message: "Comment deleted" });
   } catch (error) {

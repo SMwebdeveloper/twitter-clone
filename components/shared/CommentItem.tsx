@@ -76,7 +76,9 @@ const CommentItem = ({
   const onDelete = async () => {
     try {
       setIsLoading(true);
-      await axios.delete(`/api/comments/${comment._id}`, { data: { postId } });
+      await axios.delete(`/api/comments/${comment._id}`, {
+        data: { postId: postId },
+      });
       setComments((prev) => prev.filter((c) => c._id !== comment._id));
       setIsLoading(false);
     } catch (error) {

@@ -9,8 +9,8 @@ const ProfileHero = ({ user }: { user: IUser }) => {
       {user.coverImage ? (
         <Image
           fill
-          src={user.coverImage}
-          alt={user.name}
+          src={user?.coverImage}
+          alt={user?.name}
           style={{ objectFit: "cover" }}
         />
       ) : (
@@ -24,8 +24,8 @@ const ProfileHero = ({ user }: { user: IUser }) => {
 
       <div className="absolute -bottom-16 left-4">
         <Avatar className="w-32 h-32">
-          <AvatarImage src={user.profileImage} />
-          <AvatarFallback className="text-7xl">{user.name[0]}</AvatarFallback>
+          <AvatarImage src={user?.profileImage} />
+          <AvatarFallback className="text-7xl">{user.name?.[0]}</AvatarFallback>
         </Avatar>
       </div>
     </div>

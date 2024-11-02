@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const UserScheme = new mongoose.Schema(
+const UserSchema = new mongoose.Schema(
   {
     name: String,
     username: String,
@@ -8,11 +8,20 @@ const UserScheme = new mongoose.Schema(
     password: String,
     coverImage: String,
     profileImage: String,
+    bio: String,
+    location: String,
+    followings: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    hasNewNotifications: Boolean,
+    notifications: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Notification",
+      },
+    ],
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-const User = mongoose.models.User || mongoose.model("User", UserScheme);
+const User = mongoose.models.User || mongoose.model("User", UserSchema);
 export default User;

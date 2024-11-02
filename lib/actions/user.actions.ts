@@ -2,11 +2,14 @@
 
 import User from "@/database/user.models";
 import { connectDatabase } from "../mongoose";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth-options";
 
 export async function getUserById(userId: string) {
   try {
     await connectDatabase();
     const user = await User.findById(userId);
+    const { currentUser }: any = await getServerSession(authOptions);
 
     const filteredUser = {
       _id: user?._id,
@@ -19,7 +22,8 @@ export async function getUserById(userId: string) {
       location: user?.location,
       createdAt: user?.createdAt,
       followers: user?.followers?.length || 0,
-      following: user?.following?.length || 0,
+      followings: user?.followings?.length || 0,
+      isFollowing: user?.followers?.includes(currentUser?._id) || false,
     };
     return filteredUser;
   } catch (error) {
