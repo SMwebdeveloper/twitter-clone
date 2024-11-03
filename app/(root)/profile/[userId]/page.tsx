@@ -10,6 +10,8 @@ import React from "react";
 const Page = async ({ params }: { params: { userId: string } }) => {
   const session: any = await getServerSession(authOptions);
   const user = await getUserById(params.userId);
+
+  console.log(user);
   return (
     <>
       <Header label={user?.name} isBack />

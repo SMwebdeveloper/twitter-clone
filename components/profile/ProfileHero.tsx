@@ -1,3 +1,5 @@
+"use client";
+
 import { IUser } from "@/types";
 import Image from "next/image";
 import React from "react";

@@ -8,11 +8,13 @@ import { BiCalendar } from "react-icons/bi";
 import { formatDistanceToNowStrict } from "date-fns";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import EditModal from "../modal/EditModal";
+import useEditModal from "@/hooks/useEditModal";
 
 const ProfileBio = ({ user, userId }: { user: IUser; userId: string }) => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-
+  const editModal = useEditModal();
   const onFollow = async () => {
     try {
       setIsLoading(true);
@@ -46,11 +48,16 @@ const ProfileBio = ({ user, userId }: { user: IUser; userId: string }) => {
   };
   return (
     <>
+      <EditModal user={user} />
       <div className="border-b-[1px] border-neutral-800 pb-4">
         <div className="flex justify-end p-2">
           {userId === user._id ? (
             <>
-              <Button label="Edit profile" secondary />
+              <Button
+                label="Edit profile"
+                secondary
+                onClick={() => editModal.onOpen()}
+              />
             </>
           ) : user?.isFollowing ? (
             <Button
