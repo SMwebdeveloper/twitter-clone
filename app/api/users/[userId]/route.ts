@@ -8,6 +8,19 @@ export async function PUT(req: Request, route: { params: { userId: string } }) {
     const body = await req.json();
     const { userId } = await route.params;
 
+    const isExistingUsername = await User.findOne({ username: body?.username });
+
+    if (body?.profileImage || body?.coverImage) {
+      await User.findByIdAndUpdate(userId, body, { new: true });
+      return NextResponse.json({ message: "User updated successfully" });
+    }
+    if (isExistingUsername) {
+      return NextResponse.json(
+        { error: "Username already exists" },
+        { status: 400 }
+      );
+    }
+
     await User.findByIdAndUpdate(userId, body, { new: true });
 
     return NextResponse.json({ message: "User updated successfully" });

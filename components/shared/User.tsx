@@ -16,6 +16,7 @@ const User = ({ user }: any) => {
             {user.name}
           </p>
           <p className="text-neaturel-400 text-sm line-clamp-1">
+            @
             {user.username
               ? sliceText(user.username, 16)
               : sliceText(user.email, 16)}
