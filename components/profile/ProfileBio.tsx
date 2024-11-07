@@ -6,14 +6,14 @@ import Button from "../ui/Button";
 import { IoLocationSharp } from "react-icons/io5";
 import { BiCalendar } from "react-icons/bi";
 import { formatDistanceToNowStrict } from "date-fns";
-import { useRouter } from "next/navigation";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import EditModal from "../modal/EditModal";
 import useEditModal from "@/hooks/useEditModal";
 import Modal from "../ui/Modal";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
-import User from "../shared/User";
+import FollowUser from "../shared/FollowUser";
 
 const ProfileBio = ({ user, userId }: { user: IUser; userId: string }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -21,10 +21,11 @@ const ProfileBio = ({ user, userId }: { user: IUser; userId: string }) => {
   const [following, setFollowing] = useState<IUser[]>([]);
   const [followers, setFollowers] = useState<IUser[]>([]);
   const [isFetching, setIsFetching] = useState(false);
-  const [state, setState] = useState("following");
+  const [state, setState] = useState<"following" | "followers">("following");
 
   const router = useRouter();
   const editModal = useEditModal();
+
   const onFollow = async () => {
     try {
       setIsLoading(true);
@@ -40,14 +41,11 @@ const ProfileBio = ({ user, userId }: { user: IUser; userId: string }) => {
     }
   };
 
-  const unFollow = async () => {
+  const onUnfollow = async () => {
     try {
       setIsLoading(true);
       await axios.delete("/api/follows", {
-        data: {
-          userId: user._id,
-          currentUserId: userId,
-        },
+        data: { userId: user._id, currentUserId: userId },
       });
       router.refresh();
       setIsLoading(false);
@@ -63,20 +61,18 @@ const ProfileBio = ({ user, userId }: { user: IUser; userId: string }) => {
       const { data } = await axios.get(
         `/api/follows?state=${type}&userId=${userId}`
       );
-
       setIsFetching(false);
       return data;
     } catch (error) {
       console.log(error);
     }
   };
+
   const openFollowModal = async () => {
     try {
       setOpen(true);
-      setIsFetching(true);
-      const data = await getFollowUser(user._id, state);
-      state === "following" ? setFollowing(data) : setFollowers(data);
-      setIsFetching(false);
+      const data = await getFollowUser(user._id, "following");
+      setFollowing(data);
     } catch (error) {
       console.log(error);
     }
@@ -84,69 +80,69 @@ const ProfileBio = ({ user, userId }: { user: IUser; userId: string }) => {
 
   const onFollowing = async () => {
     setState("following");
+
     if (following.length === 0) {
       const data = await getFollowUser(user._id, "following");
       setFollowing(data);
     }
   };
+
   const onFollowers = async () => {
     setState("followers");
+
     if (followers.length === 0) {
       const data = await getFollowUser(user._id, "followers");
       setFollowers(data);
     }
   };
+
   return (
     <>
       <EditModal user={user} />
       <div className="border-b-[1px] border-neutral-800 pb-4">
         <div className="flex justify-end p-2">
           {userId === user._id ? (
-            <>
-              <Button
-                label="Edit profile"
-                secondary
-                onClick={() => editModal.onOpen()}
-              />
-            </>
-          ) : user?.isFollowing ? (
             <Button
-              label="Un follow"
+              label={"Edit profile"}
+              secondary
+              onClick={() => editModal.onOpen()}
+            />
+          ) : user.isFollowing ? (
+            <Button
+              label={"Unfollow"}
               outline
-              onClick={unFollow}
+              onClick={onUnfollow}
               disabled={isLoading}
             />
           ) : (
-            <Button label="Follow" onClick={onFollow} disabled={isLoading} />
+            <Button label={"Follow"} onClick={onFollow} disabled={isLoading} />
           )}
         </div>
 
         <div className="mt-8 px-4">
           <div className="flex flex-col">
-            <p className="text-white text-2xl font-semibold">{user?.name}</p>
+            <p className="text-white text-2xl font-semibold">{user.name}</p>
           </div>
 
           <p className="text-md text-neutral-500">
-            {user?.username ? `@${user?.username}` : user?.email}
+            {user.username ? `@${user.username}` : user.email}
           </p>
 
           <div className="flex flex-col mt-4">
-            <p className="text-white">{user?.bio}</p>
+            <p className="text-white">{user.bio}</p>
             <div className="flex gap-4 items-center">
-              {user?.location && (
-                <div className="flex flex-row items-center gap-2 text-sky-500">
+              {user.location && (
+                <div className="flex flex-row items-center gap-2 mt-4 text-sky-500">
                   <IoLocationSharp size={24} />
-                  <p>{user?.location}</p>
+                  <p>{user.location}</p>
                 </div>
               )}
-              <div className="flex flex-row items-center gap-2 text-neutral-500">
+              <div className="flex flex-row items-center gap-2 mt-4 text-neutral-500">
                 <BiCalendar size={24} />
-                {user?.createdAt && (
-                  <p>
-                    Joined{" "}
-                    {formatDistanceToNowStrict(new Date(user?.createdAt))} ago
-                  </p>
-                )}
+                <p>
+                  Joined {formatDistanceToNowStrict(new Date(user.createdAt))}{" "}
+                  ago
+                </p>
               </div>
             </div>
 
@@ -171,8 +167,7 @@ const ProfileBio = ({ user, userId }: { user: IUser; userId: string }) => {
         </div>
       </div>
 
-      {/* Follow modal */}
-
+      {/* FOLLOWING AND FOLLOWERS MODAL */}
       <Modal
         isOpen={open}
         onClose={() => setOpen(false)}
@@ -208,21 +203,31 @@ const ProfileBio = ({ user, userId }: { user: IUser; userId: string }) => {
             ) : (
               <div className="flex flex-col space-y-4">
                 {state === "following" ? (
-                  following?.length === 0 ? (
+                  following.length === 0 ? (
                     <div className="text-neutral-600 text-center p-6 text-xl">
                       No following
                     </div>
                   ) : (
-                    following?.map((user) => (
-                      <User user={user} key={user._id} />
+                    following.map((user) => (
+                      <FollowUser
+                        key={user._id}
+                        user={user}
+                        setFollowing={setFollowing}
+                      />
                     ))
                   )
-                ) : followers?.length === 0 ? (
+                ) : followers.length === 0 ? (
                   <div className="text-neutral-600 text-center p-6 text-xl">
-                    No following
+                    No followers
                   </div>
                 ) : (
-                  followers?.map((user) => <User user={user} key={user._id} />)
+                  followers.map((user) => (
+                    <FollowUser
+                      key={user._id}
+                      user={user}
+                      setFollowing={setFollowing}
+                    />
+                  ))
                 )}
               </div>
             )}
