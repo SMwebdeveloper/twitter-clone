@@ -55,24 +55,24 @@ export async function DELETE(req: Request) {
   }
 }
 
-// export async function GET(req: Request) {
-//   try {
-//     await connectToDatabase();
-//     const { searchParams } = new URL(req.url);
-//     const userId = searchParams.get("userId");
-//     const state = searchParams.get("state");
+export async function GET(req: Request) {
+  try {
+    await connectDatabase();
+    const { searchParams } = new URL(req.url);
+    const userId = searchParams.get("userId");
+    const state = searchParams.get("state");
 
-//     const user = await User.findById(userId);
+    const user = await User.findById(userId);
 
-//     if (state === "following") {
-//       const following = await User.find({ _id: { $in: user.following } });
-//       return NextResponse.json(following);
-//     } else if (state === "followers") {
-//       const followers = await User.find({ _id: { $in: user.followers } });
-//       return NextResponse.json(followers);
-//     }
-//   } catch (error) {
-//     const result = error as Error;
-//     return NextResponse.json({ error: result.message }, { status: 400 });
-//   }
-// }
+    if (state === "following") {
+      const following = await User.find({ _id: { $in: user.followings } });
+      return NextResponse.json(following);
+    } else if (state === "followers") {
+      const followers = await User.find({ _id: { $in: user.followers } });
+      return NextResponse.json(followers);
+    }
+  } catch (error) {
+    const result = error as Error;
+    return NextResponse.json({ error: result.message }, { status: 400 });
+  }
+}
