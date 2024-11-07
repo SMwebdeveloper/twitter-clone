@@ -1,16 +1,15 @@
 "use client";
 
 import { Bell, Home, User } from "lucide-react";
-import { useSession } from "next-auth/react";
 import Image from "next/image";
-import SidebarItem from "./SidebarItem";
 import Link from "next/link";
+import SidebarItem from "./SidebarItem";
 import SidebarPostButton from "./SidebaPostButton";
 import SidebarAccount from "./SidebarAccount";
+import { IUser } from "@/types";
+import { MdOutlineExplore } from "react-icons/md";
 
-const Sidebar = () => {
-  const { data: session, status }: any = useSession();
-
+const Sidebar = ({ user }: { user: IUser }) => {
   const sidebarItems = [
     {
       label: "Home",
@@ -18,25 +17,28 @@ const Sidebar = () => {
       icon: Home,
     },
     {
-      label: "Notification",
-      path: `/notifications/${
-        status === "authenticated" && session?.currentUser?._id
-      }`,
+      label: "Notifications",
+      path: `/notifications/${user?._id}`,
       icon: Bell,
+      notification: user?.hasNewNotifications,
     },
     {
       label: "Profile",
-      path: `/profile/${
-        status === "authenticated" && session?.currentUser?._id
-      }`,
+      path: `/profile/${user?._id}`,
       icon: User,
     },
+    {
+      label: "Explore",
+      path: "/explore",
+      icon: MdOutlineExplore,
+    },
   ];
+
   return (
-    <section className="sticky left-0 top-0 h-screen lg:w-[266px] w-fit flex flex-col justify-between py-4">
+    <section className="sticky left-0 top-0 h-screen lg:w-[266px] w-fit flex flex-col justify-between py-4 pl-2">
       <div className="flex flex-col space-y-2">
         <div className="rounded-full h-14 w-14 p-4 flex items-center justify-center hover:bg-sky-300 hover:bg-opacity-10 cursor-pointer transition">
-          <Image height={56} width={56} src={"/images/logo.svg"} alt="logo" />
+          <Image width={56} height={56} src={"/images/logo.svg"} alt="logo" />
         </div>
 
         {sidebarItems.map((item) => (
@@ -47,7 +49,8 @@ const Sidebar = () => {
 
         <SidebarPostButton />
       </div>
-      <SidebarAccount user={session?.currentUser} />
+
+      <SidebarAccount user={user} />
     </section>
   );
 };

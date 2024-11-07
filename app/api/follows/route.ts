@@ -1,6 +1,4 @@
-// import Notification from "@/database/notification.model";
-// import User from "@/database/user.model";
-// import { connectToDatabase } from "@/lib/mognoose";
+import Notification from "@/database/notification.models";
 import User from "@/database/user.models";
 import { connectDatabase } from "@/lib/mongoose";
 import { NextResponse } from "next/server";
@@ -18,15 +16,15 @@ export async function PUT(req: Request) {
       $push: { followings: userId },
     });
 
-    // await Notification.create({
-    //   user: userId,
-    //   body: "Someone followed you!",
-    // });
+    await Notification.create({
+      user: userId,
+      body: "Someone followed you!",
+    });
 
-    // await User.findOneAndUpdate(
-    //   { _id: userId },
-    //   { $set: { hasNewNotifications: true } }
-    // );
+    await User.findOneAndUpdate(
+      { _id: userId },
+      { $set: { hasNewNotifications: true } }
+    );
 
     return NextResponse.json({ message: "Followed" });
   } catch (error) {

@@ -11,7 +11,6 @@ interface Props {
 }
 const Layout = async ({ children }: Props) => {
   const session: any = await getServerSession(authOptions);
-  console.log(session);
 
   if (!session) {
     return (
@@ -23,7 +22,7 @@ const Layout = async ({ children }: Props) => {
   return (
     <div className="lg:container h-screen mx-auto lg:max-w-7xl">
       <div className="flex">
-        <Sidebar />
+        <Sidebar user={JSON.parse(JSON.stringify(session.currentUser))} />
         <NextTopLoader
           color="#2299DD"
           initialPosition={0.08}
