@@ -26,7 +26,7 @@ const FollowBar = () => {
             <Loader2 className="animate-spin text-sky-500" />
           </div>
         ) : (
-          <div className="flex flex-col gap-6 mt-4">
+          <div className="flex flex-col mt-4">
             {users?.map((user: any) => (
               <Link key={user._id} href={`/profile/${user._id}`}>
                 <User user={user} />
