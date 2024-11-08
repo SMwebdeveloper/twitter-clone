@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import React, { useCallback } from "react";
-import Button from "../ui/Button";
 import { FcGoogle } from "react-icons/fc";
 import { AiFillGithub } from "react-icons/ai";
 import useRegisterModal from "@/hooks/useRegisterModal";
@@ -10,6 +9,7 @@ import RegisterModal from "../modal/RegisterModal";
 import useLoginModal from "@/hooks/useLoginModal";
 import LoginModal from "../modal/LoginModal";
 import { signIn } from "next-auth/react";
+import Button from "../ui/Button";
 const Auth = () => {
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
