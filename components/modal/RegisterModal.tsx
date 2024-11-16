@@ -10,12 +10,12 @@ import { registerStep1Scheme, registerStep2Scheme } from "@/lib/validation";
 import { Form, FormControl, FormField, FormItem } from "../ui/form";
 import { Dispatch, SetStateAction } from "react";
 import { Input } from "../ui/input";
-import Button from "../ui/Button";
 import useLoginModal from "@/hooks/useLoginModal";
 import axios from "axios";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { AlertCircle } from "lucide-react";
 import { signIn } from "next-auth/react";
+import Button from "../ui/Button";
 
 const RegisterModal = () => {
   const [step, setStep] = useState(1);
